@@ -83,6 +83,25 @@ public class DataLoader {
             }
         }
 
+        // Создать менеджера (если нужен)
+        if (!userService.emailExists("manager@office.com")) {
+            User manager = new User();
+            manager.setUsername("manager");
+            manager.setFullName("Department Manager");
+            manager.setEmail("manager@office.com");
+            manager.setPassword("manager123");
+            manager.setPosition("Department Manager");
+            manager.setPhoneNumber("+1234567894");
+            manager.setRole(Role.MANAGER);
+
+            try {
+                userService.registerUser(manager); // Используем обычную регистрацию для менеджера
+                log.info("Default manager created: manager@office.com / manager123");
+            } catch (Exception e) {
+                log.error("Failed to create default manager: {}", e.getMessage());
+            }
+        }
+
         log.info("Default users initialization completed.");
     }
 }

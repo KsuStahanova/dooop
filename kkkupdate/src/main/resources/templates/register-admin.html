@@ -1,181 +1,182 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Registration - Office App</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" />
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .register-container {
+        body {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             min-height: 100vh;
-            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem 0;
         }
-        .register-card {
+        .registration-card {
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 500px;
         }
-        .role-badge {
-            background: linear-gradient(45deg, #007bff, #0056b3);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-weight: bold;
-            display: inline-block;
+        .form-floating {
             margin-bottom: 1rem;
         }
-        .security-icon {
-            animation: pulse 2s infinite;
+        .btn-primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border: none;
+            padding: 12px;
+            font-weight: 600;
         }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .text-primary {
+            color: #4facfe !important;
         }
     </style>
 </head>
-
 <body>
-<div class="register-container">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
-                <div class="register-card p-4">
-                    <div class="text-center mb-4">
-                        <i class="bi bi-shield-fill-check display-3 text-primary mb-3 security-icon"></i>
-                        <h2 class="text-primary mb-2">Administrator Registration</h2>
-                        <div class="role-badge">
-                            <i class="bi bi-gear me-2"></i>SYSTEM ADMINISTRATOR
-                        </div>
-                        <p class="text-muted">Create an administrator account with full system access</p>
-                    </div>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="registration-card">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-primary">Admin Registration</h2>
+                    <p class="text-muted">Create your administrator account</p>
+                </div>
 
-                    <div class="card border-primary">
-                        <div class="card-header bg-primary text-white">
-                            <h4 class="text-center mb-0">
-                                <i class="bi bi-person-gear me-2"></i>Admin Account Setup
-                            </h4>
-                        </div>
-                        <div class="card-body">
-                            <!-- Общие ошибки -->
-                            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                <!-- Success Message -->
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span th:text="${success}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
 
-                            <!-- Сообщение об успехе -->
-                            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <!-- Error Message -->
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
 
-                            <!-- Предупреждение о правах -->
-                            <div class="alert alert-warning" role="alert">
-                                <h6 class="alert-heading">
-                                    <i class="bi bi-exclamation-triangle me-2"></i>⚠️ Administrator Responsibilities:
-                                </h6>
-                                <ul class="mb-0 small">
-                                    <li><strong>Full system access</strong> - Can modify all data</li>
-                                    <li><strong>User management</strong> - Create, edit, delete users</li>
-                                    <li><strong>Data control</strong> - Edit presence records</li>
-                                    <li><strong>System configuration</strong> - Change settings</li>
-                                    <li><strong>Security responsibility</strong> - Protect sensitive data</li>
-                                </ul>
-                            </div>
-
-                            <form action="/register/admin" method="post">
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="username" class="form-label">
-                                            <i class="bi bi-person me-1"></i>Username <span class="text-danger">*</span>
-                                        </label>
-                                        <input type="text" class="form-control"
-                                               id="username" name="username" required />
-                                        <small class="form-text text-muted">Used for system identification</small>
-                                    </div>
-
-                                    <div class="col-md-6 mb-3">
-                                        <label for="fullName" class="form-label">
-                                            <i class="bi bi-person-vcard me-1"></i>Full Name <span class="text-danger">*</span>
-                                        </label>
-                                        <input type="text" class="form-control"
-                                               id="fullName" name="fullName" required />
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">
-                                        <i class="bi bi-envelope me-1"></i>Email <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="email" class="form-control"
-                                           id="email" name="email" required />
-                                    <small class="form-text text-muted">Admin notifications will be sent here</small>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">
-                                        <i class="bi bi-shield-lock me-1"></i>Secure Password <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="password" class="form-control"
-                                           id="password" name="password" minlength="8" required />
-                                    <small class="form-text text-muted">Minimum 8 characters, use strong password</small>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="position" class="form-label">
-                                        <i class="bi bi-briefcase me-1"></i>Admin Title <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="text" class="form-control"
-                                           id="position" name="position"
-                                           placeholder="e.g., System Administrator, IT Manager" required />
-                                </div>
-
-                                <div class="mb-4">
-                                    <label for="phoneNumber" class="form-label">
-                                        <i class="bi bi-telephone me-1"></i>Contact Phone <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="tel" class="form-control"
-                                           id="phoneNumber" name="phoneNumber"
-                                           placeholder="+1234567890" required />
-                                    <small class="form-text text-muted">Emergency contact for system issues</small>
-                                </div>
-
-                                <!-- Security Agreement -->
-                                <div class="mb-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="agreeTerms" required>
-                                        <label class="form-check-label" for="agreeTerms">
-                                            I understand and accept full administrative responsibility,
-                                            agree to the <a href="#" class="text-primary">Terms of Service</a>
-                                            and <a href="#" class="text-primary">Security Policy</a>
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="securityAware" required>
-                                        <label class="form-check-label" for="securityAware">
-                                            I acknowledge that I will handle sensitive user data responsibly
-                                            and maintain system security standards
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <button type="submit" class="btn btn-primary w-100 mb-3">
-                                    <i class="bi bi-shield-check me-2"></i>Create Administrator Account
-                                </button>
-                            </form>
-
-                            <div class="text-center">
-                                <p class="mb-2">Already have an account?</p>
-                                <a th:href="@{/login}" class="btn btn-outline-primary me-2">
-                                    <i class="bi bi-box-arrow-in-right me-1"></i>Sign In
-                                </a>
-                                <a th:href="@{/register}" class="btn btn-outline-secondary">
-                                    <i class="bi bi-person me-1"></i>Register as User
-                                </a>
-                            </div>
+                <form th:action="@{/register/admin}" th:object="${user}" method="post">
+                    <!-- Username -->
+                    <div class="form-floating">
+                        <input type="text"
+                               class="form-control"
+                               th:field="*{username}"
+                               th:class="${#fields.hasErrors('username')} ? 'form-control is-invalid' : 'form-control'"
+                               id="username"
+                               name="username"
+                               placeholder="Username"
+                               required />
+                        <label for="username">Username</label>
+                        <div th:if="${#fields.hasErrors('username')}" class="invalid-feedback">
+                            <span th:errors="*{username}"></span>
                         </div>
                     </div>
+
+                    <!-- Full Name -->
+                    <div class="form-floating">
+                        <input type="text"
+                               class="form-control"
+                               th:field="*{fullName}"
+                               th:class="${#fields.hasErrors('fullName')} ? 'form-control is-invalid' : 'form-control'"
+                               id="fullName"
+                               name="fullName"
+                               placeholder="Full Name"
+                               required />
+                        <label for="fullName">Full Name</label>
+                        <div th:if="${#fields.hasErrors('fullName')}" class="invalid-feedback">
+                            <span th:errors="*{fullName}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-floating">
+                        <input type="email"
+                               class="form-control"
+                               th:field="*{email}"
+                               th:class="${#fields.hasErrors('email')} ? 'form-control is-invalid' : 'form-control'"
+                               id="email"
+                               name="email"
+                               placeholder="Email"
+                               required />
+                        <label for="email">Email Address</label>
+                        <div th:if="${#fields.hasErrors('email')}" class="invalid-feedback">
+                            <span th:errors="*{email}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-floating">
+                        <input type="password"
+                               class="form-control"
+                               th:field="*{password}"
+                               th:class="${#fields.hasErrors('password')} ? 'form-control is-invalid' : 'form-control'"
+                               id="password"
+                               name="password"
+                               placeholder="Password"
+                               required />
+                        <label for="password">Password</label>
+                        <div th:if="${#fields.hasErrors('password')}" class="invalid-feedback">
+                            <span th:errors="*{password}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Position -->
+                    <div class="form-floating">
+                        <input type="text"
+                               class="form-control"
+                               th:field="*{position}"
+                               th:class="${#fields.hasErrors('position')} ? 'form-control is-invalid' : 'form-control'"
+                               id="position"
+                               name="position"
+                               placeholder="Position"
+                               required />
+                        <label for="position">Position/Title</label>
+                        <div th:if="${#fields.hasErrors('position')}" class="invalid-feedback">
+                            <span th:errors="*{position}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="form-floating">
+                        <input type="tel"
+                               class="form-control"
+                               th:field="*{phoneNumber}"
+                               th:class="${#fields.hasErrors('phoneNumber')} ? 'form-control is-invalid' : 'form-control'"
+                               id="phoneNumber"
+                               name="phoneNumber"
+                               placeholder="Phone Number"
+                               required />
+                        <label for="phoneNumber">Phone Number</label>
+                        <div th:if="${#fields.hasErrors('phoneNumber')}" class="invalid-feedback">
+                            <span th:errors="*{phoneNumber}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-user-shield me-2"></i>Create Admin Account
+                        </button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-4">
+                    <p class="text-muted">
+                        Already have an account?
+                        <a th:href="@{/login}" class="text-decoration-none fw-bold">Sign In</a>
+                    </p>
+                    <p class="text-muted">
+                        <a th:href="@{/register}" class="text-decoration-none">Register as User</a> |
+                        <a th:href="@{/register/boss}" class="text-decoration-none">Register as Boss</a>
+                    </p>
                 </div>
             </div>
         </div>
@@ -183,40 +184,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-    // Add form validation feedback
-    document.addEventListener('DOMContentLoaded', function() {
-        const passwordInput = document.getElementById('password');
-        if (passwordInput) {
-            passwordInput.addEventListener('input', function() {
-                const password = this.value;
-
-                let strength = 'Weak';
-                let color = 'text-danger';
-
-                if (password.length >= 8) {
-                    strength = 'Good';
-                    color = 'text-warning';
-                }
-                if (password.length >= 12 && /[A-Z]/.test(password) && /[0-9]/.test(password)) {
-                    strength = 'Strong';
-                    color = 'text-success';
-                }
-
-                // Remove existing feedback
-                const existingFeedback = this.parentNode.querySelector('.password-strength');
-                if (existingFeedback) {
-                    existingFeedback.remove();
-                }
-
-                const feedback = document.createElement('div');
-                feedback.className = 'form-text password-strength ' + color;
-                feedback.textContent = 'Password strength: ' + strength;
-                this.parentNode.appendChild(feedback);
-            });
-        }
-    });
-</script>
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
 </body>
 </html>

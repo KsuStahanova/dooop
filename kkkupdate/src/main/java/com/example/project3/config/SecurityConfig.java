@@ -9,19 +9,17 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, LogoutSuccessHandler customLogoutSuccessHandler) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable) // Отключаем CSRF для API
                 .authorizeHttpRequests(auth -> auth
@@ -46,9 +44,18 @@ public class SecurityConfig {
                             // Перенаправление в зависимости от роли
                             String role = authentication.getAuthorities().iterator().next().getAuthority();
                             switch (role) {
-                                case "ROLE_ADMIN" -> response.sendRedirect("/admin");
-                                case "ROLE_BOSS" -> response.sendRedirect("/boss");
-                                default -> response.sendRedirect("/dashboard");
+                                case "ROLE_ADMIN":
+                                    response.sendRedirect("/admin");
+                                    break;
+                                case "ROLE_BOSS":
+                                    response.sendRedirect("/boss");
+                                    break;
+                                case "ROLE_MANAGER":
+                                    response.sendRedirect("/dashboard");
+                                    break;
+                                default:
+                                    response.sendRedirect("/dashboard");
+                                    break;
                             }
                         })
                         .permitAll()

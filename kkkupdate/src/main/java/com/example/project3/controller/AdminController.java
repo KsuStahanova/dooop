@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.project3.model.PresenceRecord;
+import com.example.project3.model.Role;
 import com.example.project3.model.User;
 import com.example.project3.service.PresenceService;
 import com.example.project3.service.UserService;
@@ -47,7 +48,7 @@ public class AdminController {
             log.debug("User found: {}", user.getFullName());
 
             // Определяем тип пользователя для перенаправления
-            if (user.getRole().name().equals("BOSS")) {
+            if (user.getRole() == Role.BOSS) {
                 return "redirect:/boss";
             }
 
@@ -79,7 +80,7 @@ public class AdminController {
             User user = userService.findByEmail(email).orElseThrow();
 
             // Перенаправляем Boss на его собственную страницу
-            if (user.getRole().name().equals("BOSS")) {
+            if (user.getRole() == Role.BOSS) {
                 return "redirect:/boss/users";
             }
 
@@ -105,7 +106,7 @@ public class AdminController {
             User user = userService.findByEmail(email).orElseThrow();
 
             // Перенаправляем Boss на его собственную страницу
-            if (user.getRole().name().equals("BOSS")) {
+            if (user.getRole() == Role.BOSS) {
                 return "redirect:/boss/reports" + (period != null ? "?period=" + period : "");
             }
 
@@ -188,20 +189,17 @@ public class AdminController {
             period = "day";
         }
 
-        return switch (period) {
-            case "week" -> {
+        switch (period) {
+            case "week":
                 log.debug("Calculating start date for week period");
-                yield now.minusWeeks(1);
-            }
-            case "month" -> {
+                return now.minusWeeks(1);
+            case "month":
                 log.debug("Calculating start date for month period");
-                yield now.minusMonths(1);
-            }
-            default -> {
+                return now.minusMonths(1);
+            default:
                 log.debug("Calculating start date for day period (default)");
-                yield now.withHour(0).withMinute(0).withSecond(0).withNano(0);
-            }
-        };
+                return now.withHour(0).withMinute(0).withSecond(0).withNano(0);
+        }
     }
 
     private List<PresenceRecord> getTodayPresenceRecords() {

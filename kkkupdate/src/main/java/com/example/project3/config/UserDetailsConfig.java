@@ -7,12 +7,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.example.project3.service.UserService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @RequiredArgsConstructor
 public class UserDetailsConfig {
-    private final PasswordEncoder passwordEncoder;
 
     @Bean
     public UserDetailsService userDetailsService(UserService userService) {
